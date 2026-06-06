@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TitleType {
+  movie
+  tv
+}
+
+enum WatchStatus {
+  planned
+  watching
+  watched
+  dropped
+}
+
+model User {
+  id        String      @id @default(cuid())
+  email     String      @unique
+  name      String?
+  image     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  titles    UserTitle[]
+}
+
+model Title {
+  id            String      @id @default(cuid())
+  tmdbId        Int
+  type          TitleType
+  title         String
+  originalTitle String?
+  posterPath    String?
+  releaseYear   Int?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  users         UserTitle[]
+
+  @@unique([tmdbId, type])
+}
+
+model UserTitle {
+  id        String      @id @default(cuid())
+  userId    String
+  titleId   String
+  status    WatchStatus @default(planned)
+  rating    Int?
+  favorite  Boolean     @default(false)
+  watchedAt DateTime?
+  note      String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     Title       @relation(fields: [titleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, titleId])
+  @@index([userId, status])
+}
