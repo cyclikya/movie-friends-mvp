@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type SearchResult = {
@@ -106,9 +107,11 @@ export default function SearchPage() {
                 className="rounded-xl border border-white/10 p-4"
               >
                 {item.poster_path ? (
-                  <img
+                  <Image
                     src={`https://image.tmdb.org/t/p/w342${item.poster_path}`}
                     alt={title}
+                    width={342}
+                    height={513}
                     className="mb-3 aspect-[2/3] w-full rounded-lg object-cover"
                   />
                 ) : (
